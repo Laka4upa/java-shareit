@@ -5,15 +5,11 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springframework.validation.annotation.Validated;
 
 /**
  * TODO Sprint add-controllers.
  */
 @Data
-@Validated
-@EqualsAndHashCode
 @Builder(toBuilder = true)
 @AllArgsConstructor
 public class User {

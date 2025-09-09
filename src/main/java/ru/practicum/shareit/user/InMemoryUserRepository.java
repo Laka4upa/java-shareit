@@ -35,7 +35,7 @@ public class InMemoryUserRepository implements UserRepository {
             users.put(user.getId(), user);
             return user;
         }
-        throw new NoSuchElementException("User not found with id: " + user.getId());
+        throw new NoSuchElementException("Пользователь не найден с id: " + user.getId());
     }
 
     @Override

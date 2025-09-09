@@ -24,7 +24,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto getUserById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден с id: " + id));
         return userMapper.toDto(user);
     }
 
@@ -38,7 +38,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto updateUser(Long id, UserUpdateDto userUpdateDto) {
         User existingUser = userRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден с id: " + id));
         if (userUpdateDto.getEmail() != null && !userUpdateDto.getEmail().equals(existingUser.getEmail())) {
             checkEmailUniqueness(userUpdateDto.getEmail(), id);
         }
@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
                 .filter(user -> excludedUserId == null || !user.getId().equals(excludedUserId))
                 .findFirst()
                 .ifPresent(user -> {
-                    throw new IllegalArgumentException("Email already exists: " + email);
+                    throw new IllegalArgumentException("Email уже существует: " + email);
                 });
     }
 }

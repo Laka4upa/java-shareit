@@ -45,7 +45,7 @@ public class InMemoryItemRepository implements ItemRepository {
 
         String searchText = text.toLowerCase();
         return items.values().stream()
-                .filter(Item::getIsAvailable)
+                .filter(item -> item.getAvailable() != null && item.getAvailable())
                 .filter(item -> item.getName().toLowerCase().contains(searchText) ||
                         item.getDescription().toLowerCase().contains(searchText))
                 .collect(Collectors.toList());
@@ -57,7 +57,7 @@ public class InMemoryItemRepository implements ItemRepository {
             items.put(item.getId(), item);
             return item;
         }
-        throw new NoSuchElementException("Item not found with id: " + item.getId());
+        throw new NoSuchElementException("Предмет не найден с id: " + item.getId());
     }
 
     @Override

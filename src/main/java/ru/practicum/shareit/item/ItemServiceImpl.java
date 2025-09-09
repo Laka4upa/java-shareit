@@ -17,11 +17,17 @@ public class ItemServiceImpl implements ItemService {
     private final ItemMapper itemMapper;
 
     @Override
-    public ItemDto createItem(ItemDto itemDto, Long ownerId) {
+    public ItemDto createItem(ItemCreateDto itemCreateDto, Long ownerId) {
         User owner = userRepository.findById(ownerId)
-                .orElseThrow(() -> new NoSuchElementException("User not found with id: " + ownerId));
+                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден с Id " + ownerId));
 
-        Item item = itemMapper.toEntity(itemDto, owner);
+        Item item = Item.builder()
+                .name(itemCreateDto.getName())
+                .description(itemCreateDto.getDescription())
+                .available(itemCreateDto.getAvailable())
+                .owner(owner)
+                .requestId(itemCreateDto.getRequestId())
+                .build();
         Item savedItem = itemRepository.save(item);
         return itemMapper.toDto(savedItem);
     }
@@ -29,7 +35,7 @@ public class ItemServiceImpl implements ItemService {
     @Override
     public ItemDto getItemById(Long id) {
         Item item = itemRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Item not found with id: " + id));
+                .orElseThrow(() -> new NoSuchElementException("Предмет не найден с id: " + id));
         return itemMapper.toDto(item);
     }
 
@@ -41,23 +47,26 @@ public class ItemServiceImpl implements ItemService {
     }
 
     @Override
-    public ItemDto updateItem(Long id, ItemDto itemDto, Long ownerId) {
+    public ItemDto updateItem(Long id, ItemUpdateDto itemUpdateDto, Long ownerId) {
         Item existingItem = itemRepository.findById(id)
-                .orElseThrow(() -> new NoSuchElementException("Item not found with id: " + id));
-
+                .orElseThrow(() -> new NoSuchElementException("Предмет не найден с id: " + id));
         if (!existingItem.getOwner().getId().equals(ownerId)) {
-            throw new SecurityException("Only owner can update the item");
+            throw new SecurityException("Только владелец может обновлять предмет");
+        }
+        if (itemUpdateDto.getName() != null) {
+            existingItem.setName(itemUpdateDto.getName());
+        }
+        if (itemUpdateDto.getDescription() != null) {
+            existingItem.setDescription(itemUpdateDto.getDescription());
+        }
+        if (itemUpdateDto.getAvailable() != null) {
+            existingItem.setAvailable(itemUpdateDto.getAvailable());
+        }
+        if (itemUpdateDto.getRequestId() != null) {
+            existingItem.setRequestId(itemUpdateDto.getRequestId());
         }
 
-        if (itemDto.getName() != null) {
-            existingItem.setName(itemDto.getName());
-        }
-        if (itemDto.getDescription() != null) {
-            existingItem.setDescription(itemDto.getDescription());
-        }
-        if (itemDto.getAvailable() != null) {
-            existingItem.setIsAvailable(itemDto.getAvailable());
-        }
+        System.out.println("Обновленный предмет: " + existingItem);
 
         Item updatedItem = itemRepository.update(existingItem);
         return itemMapper.toDto(updatedItem);

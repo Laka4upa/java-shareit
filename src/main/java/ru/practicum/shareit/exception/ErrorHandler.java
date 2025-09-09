@@ -24,7 +24,7 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler(IllegalArgumentException.class)
-    @ResponseStatus(HttpStatus.CONFLICT) // Изменяем на 409 CONFLICT
+    @ResponseStatus(HttpStatus.CONFLICT)
     public Map<String, String> handleConflict(IllegalArgumentException e) {
         return Map.of("error", e.getMessage());
     }

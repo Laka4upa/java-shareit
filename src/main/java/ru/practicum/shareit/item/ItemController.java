@@ -13,9 +13,9 @@ public class ItemController {
     private final ItemService itemService;
 
     @PostMapping
-    public ItemDto createItem(@Valid @RequestBody ItemDto itemDto,
+    public ItemDto createItem(@Valid @RequestBody ItemCreateDto itemCreateDto,
                               @RequestHeader("X-Sharer-User-Id") Long ownerId) {
-        return itemService.createItem(itemDto, ownerId);
+        return itemService.createItem(itemCreateDto, ownerId);
     }
 
     @GetMapping("/{id}")
@@ -30,9 +30,9 @@ public class ItemController {
 
     @PatchMapping("/{id}")
     public ItemDto updateItem(@PathVariable Long id,
-                              @Valid @RequestBody ItemDto itemDto,
+                              @Valid @RequestBody ItemUpdateDto itemUpdateDto,
                               @RequestHeader("X-Sharer-User-Id") Long ownerId) {
-        return itemService.updateItem(id, itemDto, ownerId);
+        return itemService.updateItem(id, itemUpdateDto, ownerId);
     }
 
     @GetMapping("/search")
