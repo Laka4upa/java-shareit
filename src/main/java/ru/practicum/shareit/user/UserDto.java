@@ -5,18 +5,13 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.springframework.validation.annotation.Validated;
+import lombok.NoArgsConstructor;
 
-/**
- * TODO Sprint add-controllers.
- */
 @Data
-@Validated
-@EqualsAndHashCode
-@Builder(toBuilder = true)
+@Builder
+@NoArgsConstructor
 @AllArgsConstructor
-public class User {
+public class UserDto {
     private Long id;
     @NotBlank(message = "Имя не может быть пустым")
     private String name;
