@@ -1,4 +1,4 @@
-package ru.practicum.shareit.booking.dto;
+package booking;
 
 /**
  * TODO Sprint add-bookings.

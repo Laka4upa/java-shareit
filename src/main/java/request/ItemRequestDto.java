@@ -1,4 +1,4 @@
-package ru.practicum.shareit.request.dto;
+package request;
 
 /**
  * TODO Sprint add-item-requests.
