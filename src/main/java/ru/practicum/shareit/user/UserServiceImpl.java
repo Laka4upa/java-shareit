@@ -2,6 +2,7 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.shareit.exception.ValidationException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -15,7 +16,6 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto createUser(UserDto userDto) {
-        checkEmailUniqueness(userDto.getEmail(), null);
         User user = userMapper.toEntity(userDto);
         User savedUser = userRepository.save(user);
         return userMapper.toDto(savedUser);
@@ -39,14 +39,17 @@ public class UserServiceImpl implements UserService {
     public UserDto updateUser(Long id, UserUpdateDto userUpdateDto) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Пользователь не найден с id: " + id));
-        if (userUpdateDto.getEmail() != null && !userUpdateDto.getEmail().equals(existingUser.getEmail())) {
-            checkEmailUniqueness(userUpdateDto.getEmail(), id);
-        }
+
         if (userUpdateDto.getName() != null) {
             existingUser.setName(userUpdateDto.getName());
         }
         if (userUpdateDto.getEmail() != null) {
-            existingUser.setEmail(userUpdateDto.getEmail());
+            if (!userUpdateDto.getEmail().equals(existingUser.getEmail())) {
+                if (userRepository.existsByEmailAndIdNot(userUpdateDto.getEmail(), id)) {
+                    throw new ValidationException("Email уже существует: " + userUpdateDto.getEmail());
+                }
+                existingUser.setEmail(userUpdateDto.getEmail());
+            }
         }
         User updatedUser = userRepository.update(existingUser);
         return userMapper.toDto(updatedUser);
@@ -55,15 +58,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
-    }
-
-    private void checkEmailUniqueness(String email, Long excludedUserId) {
-        userRepository.findAll().stream()
-                .filter(user -> user.getEmail().equals(email))
-                .filter(user -> excludedUserId == null || !user.getId().equals(excludedUserId))
-                .findFirst()
-                .ifPresent(user -> {
-                    throw new IllegalArgumentException("Email уже существует: " + email);
-                });
     }
 }

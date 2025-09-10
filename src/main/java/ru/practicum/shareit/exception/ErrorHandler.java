@@ -34,4 +34,10 @@ public class ErrorHandler {
     public Map<String, String> handleInternalError(Exception e) {
         return Map.of("error", "Internal server error");
     }
+
+    @ExceptionHandler(ValidationException.class)
+    @ResponseStatus(HttpStatus.CONFLICT)
+    public Map<String, String> handleValidationException(ValidationException e) {
+        return Map.of("error", e.getMessage());
+    }
 }

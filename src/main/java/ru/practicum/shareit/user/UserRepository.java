@@ -13,4 +13,6 @@ public interface UserRepository {
     User update(User user);
 
     void deleteById(Long id);
+
+    boolean existsByEmailAndIdNot(String email, Long excludedId);
 }

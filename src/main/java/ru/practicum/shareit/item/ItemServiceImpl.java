@@ -1,6 +1,7 @@
 package ru.practicum.shareit.item;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
@@ -11,6 +12,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Slf4j
 public class ItemServiceImpl implements ItemService {
     private final ItemRepository itemRepository;
     private final UserRepository userRepository;
@@ -66,7 +68,7 @@ public class ItemServiceImpl implements ItemService {
             existingItem.setRequestId(itemUpdateDto.getRequestId());
         }
 
-        System.out.println("Обновленный предмет: " + existingItem);
+        log.debug("Предмет обновлен: {}", existingItem);
 
         Item updatedItem = itemRepository.update(existingItem);
         return itemMapper.toDto(updatedItem);
