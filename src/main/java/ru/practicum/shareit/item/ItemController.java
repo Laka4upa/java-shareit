@@ -19,8 +19,9 @@ public class ItemController {
     }
 
     @GetMapping("/{id}")
-    public ItemDto getItemById(@PathVariable Long id) {
-        return itemService.getItemById(id);
+    public ItemDto getItemById(@PathVariable Long id,
+                               @RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.getItemById(id, userId);
     }
 
     @GetMapping
@@ -38,5 +39,13 @@ public class ItemController {
     @GetMapping("/search")
     public List<ItemDto> searchAvailableItems(@RequestParam String text) {
         return itemService.searchAvailableItems(text);
+    }
+
+    @PostMapping("/{itemId}/comment")
+    public CommentResponseDto addComment(
+            @PathVariable Long itemId,
+            @Valid @RequestBody CommentRequestDto commentRequestDto,
+            @RequestHeader("X-Sharer-User-Id") Long userId) {
+        return itemService.addComment(itemId, commentRequestDto, userId);
     }
 }
