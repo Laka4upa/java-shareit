@@ -6,6 +6,9 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import ru.practicum.shareit.booking.BookingShortDto;
+
+import java.util.List;
 
 @Data
 @Builder
@@ -19,5 +22,9 @@ public class ItemDto {
     private String description;
     @NotNull(message = "Статус доступности обязателен")
     private Boolean available;
+    private Long ownerId;
     private Long requestId;
+    private BookingShortDto lastBooking;
+    private BookingShortDto nextBooking;
+    private List<CommentResponseDto> comments;
 }
