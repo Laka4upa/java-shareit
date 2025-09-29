@@ -6,6 +6,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.exception.ConflictException;
+import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.item.Item;
 import ru.practicum.shareit.item.ItemRepository;
@@ -27,6 +28,7 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final BookingMapper bookingMapper;
+    private ForbiddenException forbiddenException;
 
     @Override
     @Transactional
@@ -56,6 +58,16 @@ public class BookingServiceImpl implements BookingService {
             throw new ValidationException("Дата начала должна быть в будущем");
         }
 
+        boolean hasOverlap = bookingRepository.existsOverlappingBookings(
+                item.getId(),
+                bookingRequestDto.getStart(),
+                bookingRequestDto.getEnd()
+        );
+
+        if (hasOverlap) {
+            throw new ValidationException("Предмет уже забронирован на указанные даты");
+        }
+
         Booking booking = bookingMapper.toEntity(bookingRequestDto);
         booking.setItem(item);
         booking.setBooker(booker);
@@ -74,12 +86,25 @@ public class BookingServiceImpl implements BookingService {
 
         // Проверка прав владельца
         if (!booking.getItem().getOwner().getId().equals(ownerId)) {
-            throw new SecurityException("Только владелец предмета может подтверждать бронирование");
+            throw forbiddenException;
         }
 
         // Проверка статуса
         if (booking.getStatus() != BookingStatus.WAITING) {
             throw new ConflictException("Бронирование уже обработано");
+        }
+
+        if (approved) {
+            boolean hasOverlap = bookingRepository.existsOverlappingBookingsExcluding(
+                    booking.getItem().getId(),
+                    booking.getStartTime(),
+                    booking.getEndTime(),
+                    bookingId
+            );
+
+            if (hasOverlap) {
+                throw new ValidationException("Нельзя подтвердить бронирование - есть пересечение с другими бронированиями");
+            }
         }
 
         booking.setStatus(approved ? BookingStatus.APPROVED : BookingStatus.REJECTED);

@@ -18,9 +18,9 @@ public class ErrorHandler {
         return Map.of("error", e.getMessage());
     }
 
-    @ExceptionHandler(SecurityException.class)
+    @ExceptionHandler(ForbiddenException.class)
     @ResponseStatus(HttpStatus.FORBIDDEN)
-    public Map<String, String> handleForbidden(SecurityException e) {
+    public Map<String, String> handleForbidden(ForbiddenException e) {
         return Map.of("error", e.getMessage());
     }
 

@@ -58,4 +58,25 @@ public interface BookingRepository extends JpaRepository<Booking, Long> {
     boolean existsByItemIdAndBookerIdAndEndTimeBefore(@Param("itemId") Long itemId,
                                                       @Param("userId") Long userId,
                                                       @Param("currentTime") LocalDateTime currentTime);
+
+    // Проверяет, есть ли пересекающиеся APPROVED/WAITING бронирования для предмета
+
+    @Query("SELECT COUNT(b) > 0 FROM Booking b " +
+            "WHERE b.item.id = :itemId " +
+            "AND b.status IN ('APPROVED', 'WAITING') " +
+            "AND (:startTime < b.endTime AND :endTime > b.startTime)")
+    boolean existsOverlappingBookings(@Param("itemId") Long itemId,
+                                      @Param("startTime") LocalDateTime startTime,
+                                      @Param("endTime") LocalDateTime endTime);
+
+    // Проверяет пересечения, исключая текущее бронирование (для обновлений)
+    @Query("SELECT COUNT(b) > 0 FROM Booking b " +
+            "WHERE b.item.id = :itemId " +
+            "AND b.id <> :excludedBookingId " +
+            "AND b.status IN ('APPROVED', 'WAITING') " +
+            "AND (:startTime < b.endTime AND :endTime > b.startTime)")
+    boolean existsOverlappingBookingsExcluding(@Param("itemId") Long itemId,
+                                               @Param("startTime") LocalDateTime startTime,
+                                               @Param("endTime") LocalDateTime endTime,
+                                               @Param("excludedBookingId") Long excludedBookingId);
 }

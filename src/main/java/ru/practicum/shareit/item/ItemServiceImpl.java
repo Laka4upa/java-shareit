@@ -8,6 +8,7 @@ import org.springframework.transaction.annotation.Transactional;
 import ru.practicum.shareit.booking.Booking;
 import ru.practicum.shareit.booking.BookingRepository;
 import ru.practicum.shareit.booking.BookingShortDto;
+import ru.practicum.shareit.exception.ForbiddenException;
 import ru.practicum.shareit.exception.ValidationException;
 import ru.practicum.shareit.user.User;
 import ru.practicum.shareit.user.UserRepository;
@@ -93,7 +94,7 @@ public class ItemServiceImpl implements ItemService {
                 .orElseThrow(() -> new NoSuchElementException("Предмет не найден с id: " + id));
 
         if (!existingItem.getOwner().getId().equals(ownerId)) {
-            throw new SecurityException("Только владелец может обновлять предмет");
+            throw new ForbiddenException("Только владелец может обновлять предмет");
         }
 
         if (itemUpdateDto.getName() != null) {
