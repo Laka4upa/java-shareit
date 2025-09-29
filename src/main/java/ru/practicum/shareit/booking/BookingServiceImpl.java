@@ -28,7 +28,6 @@ public class BookingServiceImpl implements BookingService {
     private final UserRepository userRepository;
     private final ItemRepository itemRepository;
     private final BookingMapper bookingMapper;
-    private ForbiddenException forbiddenException;
 
     @Override
     @Transactional
@@ -86,7 +85,7 @@ public class BookingServiceImpl implements BookingService {
 
         // Проверка прав владельца
         if (!booking.getItem().getOwner().getId().equals(ownerId)) {
-            throw forbiddenException;
+            throw new ForbiddenException("Только владелец предмета может подтверждать бронирование");
         }
 
         // Проверка статуса
