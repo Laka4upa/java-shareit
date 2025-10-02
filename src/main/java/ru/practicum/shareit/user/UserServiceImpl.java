@@ -2,7 +2,8 @@ package ru.practicum.shareit.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import ru.practicum.shareit.exception.ValidationException;
+import org.springframework.transaction.annotation.Transactional;
+import ru.practicum.shareit.exception.ConflictException;
 
 import java.util.List;
 import java.util.NoSuchElementException;
@@ -10,11 +11,13 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
+@Transactional(readOnly = true)
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final UserMapper userMapper;
 
     @Override
+    @Transactional
     public UserDto createUser(UserDto userDto) {
         User user = userMapper.toEntity(userDto);
         User savedUser = userRepository.save(user);
@@ -36,6 +39,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Transactional
     public UserDto updateUser(Long id, UserUpdateDto userUpdateDto) {
         User existingUser = userRepository.findById(id)
                 .orElseThrow(() -> new NoSuchElementException("Пользователь не найден с id: " + id));
@@ -46,16 +50,18 @@ public class UserServiceImpl implements UserService {
         if (userUpdateDto.getEmail() != null) {
             if (!userUpdateDto.getEmail().equals(existingUser.getEmail())) {
                 if (userRepository.existsByEmailAndIdNot(userUpdateDto.getEmail(), id)) {
-                    throw new ValidationException("Email уже существует: " + userUpdateDto.getEmail());
+                    throw new ConflictException("Email уже существует: " + userUpdateDto.getEmail());
                 }
                 existingUser.setEmail(userUpdateDto.getEmail());
             }
         }
-        User updatedUser = userRepository.update(existingUser);
+
+        User updatedUser = userRepository.save(existingUser);
         return userMapper.toDto(updatedUser);
     }
 
     @Override
+    @Transactional
     public void deleteUser(Long id) {
         userRepository.deleteById(id);
     }
