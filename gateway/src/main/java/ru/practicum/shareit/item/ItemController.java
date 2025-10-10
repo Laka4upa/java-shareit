@@ -17,8 +17,8 @@ import ru.practicum.shareit.item.dto.ItemUpdateDto;
 @RequiredArgsConstructor
 @Validated
 public class ItemController {
-    public static final String HEADER = "X-Sharer-User-Id";
     private final ItemClient itemClient;
+    public static final String HEADER = "X-Sharer-User-Id";
 
     @GetMapping
     public ResponseEntity<Object> getItems(@RequestHeader(HEADER) Long userId,

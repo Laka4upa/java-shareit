@@ -16,8 +16,8 @@ import ru.practicum.shareit.booking.dto.BookingState;
 @RequiredArgsConstructor
 @Validated
 public class BookingController {
-    public static final String HEADER = "X-Sharer-User-Id";
     private final BookingClient bookingClient;
+    public static final String HEADER = "X-Sharer-User-Id";
 
     @GetMapping
     public ResponseEntity<Object> getBookings(@RequestHeader(HEADER) Long userId,

@@ -29,7 +29,7 @@ public class UserClient extends BaseClient {
         return post("", userDto);
     }
 
-    public ResponseEntity<Object> updateUser(Long userId, UserUpdateDto userUpdateDto) {
+    public ResponseEntity<Object> updateUser(Long userId, UserUpdateDto userUpdateDto ) {
         return patch("/" + userId, userUpdateDto);
     }
 
