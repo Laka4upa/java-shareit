@@ -126,14 +126,12 @@ class ItemDtoJsonTest {
 
     @Test
     void itemCreateDto_ShouldDeserializeCorrectly() throws Exception {
-        String content = """
-                {
-                    "name": "Item",
-                    "description": "Description",
-                    "available": true,
-                    "requestId": 10
-                }
-                """;
+        String content = "{\n" +
+                "    \"name\": \"Item\",\n" +
+                "    \"description\": \"Description\",\n" +
+                "    \"available\": true,\n" +
+                "    \"requestId\": 10\n" +
+                "}";
 
         ItemCreateDto dto = itemCreateJson.parseObject(content);
 

@@ -25,31 +25,22 @@ class BookingDtoJsonTest {
 
     @Test
     void bookingRequestDto_ShouldSerializeCorrectly() throws Exception {
-        BookingRequestDto dto = BookingRequestDto.builder()
-                .itemId(1L)
-                .start(LocalDateTime.of(2024, 1, 1, 10, 0))
-                .end(LocalDateTime.of(2024, 1, 2, 10, 0))
-                .build();
+        BookingRequestDto dto = BookingRequestDto.builder().itemId(1L).start(LocalDateTime.of(2024, 1, 1, 10, 0)).end(LocalDateTime.of(2024, 1, 2, 10, 0)).build();
 
         var jsonContent = requestJson.write(dto);
 
-        // Then
         assertThat(jsonContent).extractingJsonPathNumberValue("$.itemId").isEqualTo(1);
-        assertThat(jsonContent).extractingJsonPathStringValue("$.start")
-                .isEqualTo("2024-01-01T10:00:00");
-        assertThat(jsonContent).extractingJsonPathStringValue("$.end")
-                .isEqualTo("2024-01-02T10:00:00");
+        assertThat(jsonContent).extractingJsonPathStringValue("$.start").isEqualTo("2024-01-01T10:00:00");
+        assertThat(jsonContent).extractingJsonPathStringValue("$.end").isEqualTo("2024-01-02T10:00:00");
     }
 
     @Test
     void bookingRequestDto_ShouldDeserializeCorrectly() throws Exception {
-        String content = """
-                {
-                    "itemId": 1,
-                    "start": "2024-01-01T10:00:00",
-                    "end": "2024-01-02T10:00:00"
-                }
-                """;
+        String content = "{\n" +
+                "    \"itemId\": 1,\n" +
+                "    \"start\": \"2024-01-01T10:00:00\",\n" +
+                "    \"end\": \"2024-01-02T10:00:00\"\n" +
+                "}";
 
         BookingRequestDto dto = requestJson.parseObject(content);
 
@@ -63,22 +54,13 @@ class BookingDtoJsonTest {
         UserDto booker = UserDto.builder().id(1L).name("Booker").build();
         ItemDto item = ItemDto.builder().id(1L).name("Item").build();
 
-        BookingResponseDto dto = BookingResponseDto.builder()
-                .id(1L)
-                .start(LocalDateTime.of(2024, 1, 1, 10, 0))
-                .end(LocalDateTime.of(2024, 1, 2, 10, 0))
-                .status(BookingStatus.APPROVED)
-                .booker(booker)
-                .item(item)
-                .build();
+        BookingResponseDto dto = BookingResponseDto.builder().id(1L).start(LocalDateTime.of(2024, 1, 1, 10, 0)).end(LocalDateTime.of(2024, 1, 2, 10, 0)).status(BookingStatus.APPROVED).booker(booker).item(item).build();
 
         var jsonContent = responseJson.write(dto);
 
         assertThat(jsonContent).extractingJsonPathNumberValue("$.id").isEqualTo(1);
-        assertThat(jsonContent).extractingJsonPathStringValue("$.start")
-                .isEqualTo("2024-01-01T10:00:00");
-        assertThat(jsonContent).extractingJsonPathStringValue("$.end")
-                .isEqualTo("2024-01-02T10:00:00");
+        assertThat(jsonContent).extractingJsonPathStringValue("$.start").isEqualTo("2024-01-01T10:00:00");
+        assertThat(jsonContent).extractingJsonPathStringValue("$.end").isEqualTo("2024-01-02T10:00:00");
         assertThat(jsonContent).extractingJsonPathStringValue("$.status").isEqualTo("APPROVED");
         assertThat(jsonContent).extractingJsonPathNumberValue("$.booker.id").isEqualTo(1);
         assertThat(jsonContent).extractingJsonPathNumberValue("$.item.id").isEqualTo(1);

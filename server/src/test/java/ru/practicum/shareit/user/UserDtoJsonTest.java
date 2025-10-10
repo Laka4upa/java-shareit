@@ -22,73 +22,67 @@ class UserDtoJsonTest {
     void userDto_ShouldSerializeCorrectly() throws Exception {
         UserDto dto = UserDto.builder()
                 .id(1L)
-                .name("John Doe")
-                .email("john@mail.com")
+                .name("Иван Иванов")
+                .email("ivan@mail.ru")
                 .build();
 
         var jsonContent = userDtoJson.write(dto);
 
         assertThat(jsonContent).extractingJsonPathNumberValue("$.id").isEqualTo(1);
-        assertThat(jsonContent).extractingJsonPathStringValue("$.name").isEqualTo("John Doe");
-        assertThat(jsonContent).extractingJsonPathStringValue("$.email").isEqualTo("john@mail.com");
+        assertThat(jsonContent).extractingJsonPathStringValue("$.name").isEqualTo("Иван Иванов");
+        assertThat(jsonContent).extractingJsonPathStringValue("$.email").isEqualTo("ivan@mail.ru");
     }
 
     @Test
     void userDto_ShouldDeserializeCorrectly() throws Exception {
-        String content = """
-                {
-                    "id": 1,
-                    "name": "John Doe",
-                    "email": "john@mail.com"
-                }
-                """;
+        String content = "{\n" +
+                "    \"id\": 1,\n" +
+                "    \"name\": \"Иван Иванов\",\n" +
+                "    \"email\": \"ivan@mail.ru\"\n" +
+                "}";
 
         UserDto dto = userDtoJson.parseObject(content);
 
         assertThat(dto.getId()).isEqualTo(1L);
-        assertThat(dto.getName()).isEqualTo("John Doe");
-        assertThat(dto.getEmail()).isEqualTo("john@mail.com");
+        assertThat(dto.getName()).isEqualTo("Иван Иванов");
+        assertThat(dto.getEmail()).isEqualTo("ivan@mail.ru");
     }
 
     @Test
     void userUpdateDto_ShouldSerializeCorrectly() throws Exception {
         UserUpdateDto dto = UserUpdateDto.builder()
-                .name("John Doe")
-                .email("john@mail.com")
+                .name("Иван Иванов")
+                .email("ivan@mail.ru")
                 .build();
 
         var jsonContent = userUpdateDtoJson.write(dto);
 
-        assertThat(jsonContent).extractingJsonPathStringValue("$.name").isEqualTo("John Doe");
-        assertThat(jsonContent).extractingJsonPathStringValue("$.email").isEqualTo("john@mail.com");
+        assertThat(jsonContent).extractingJsonPathStringValue("$.name").isEqualTo("Иван Иванов");
+        assertThat(jsonContent).extractingJsonPathStringValue("$.email").isEqualTo("ivan@mail.ru");
     }
 
     @Test
     void userUpdateDto_ShouldDeserializeCorrectly() throws Exception {
-        String content = """
-                {
-                    "name": "John Doe",
-                    "email": "john@mail.com"
-                }
-                """;
+        String content = "{\n" +
+                "    \"name\": \"Иван Иванов\",\n" +
+                "    \"email\": \"ivan@mail.ru\"\n" +
+                "}";
 
         UserUpdateDto dto = userUpdateDtoJson.parseObject(content);
 
-        assertThat(dto.getName()).isEqualTo("John Doe");
-        assertThat(dto.getEmail()).isEqualTo("john@mail.com");
+        assertThat(dto.getName()).isEqualTo("Иван Иванов");
+        assertThat(dto.getEmail()).isEqualTo("ivan@mail.ru");
     }
 
     @Test
     void userUpdateDto_ShouldDeserializeWithPartialData() throws Exception {
-        String content = """
-                {
-                    "name": "John Doe"
-                }
-                """;
+        String content = "{\n" +
+                "    \"name\": \"Иван Иванов\"\n" +
+                "}";
 
         UserUpdateDto dto = userUpdateDtoJson.parseObject(content);
 
-        assertThat(dto.getName()).isEqualTo("John Doe");
+        assertThat(dto.getName()).isEqualTo("Иван Иванов");
         assertThat(dto.getEmail()).isNull();
     }
 }
