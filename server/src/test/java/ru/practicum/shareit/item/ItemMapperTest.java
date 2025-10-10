@@ -17,7 +17,6 @@ class ItemMapperTest {
 
     @Test
     void toDto_WithValidItem_ShouldReturnItemDto() {
-        // Given
         User owner = User.builder()
                 .id(1L)
                 .name("Owner")
@@ -32,10 +31,8 @@ class ItemMapperTest {
                 .owner(owner)
                 .build();
 
-        // When
         ItemDto dto = itemMapper.toDto(item);
 
-        // Then
         assertNotNull(dto);
         assertEquals(1L, dto.getId());
         assertEquals("Item", dto.getName());
@@ -46,7 +43,6 @@ class ItemMapperTest {
 
     @Test
     void toDto_WithItemWithRequest_ShouldReturnItemDtoWithRequestId() {
-        // Given
         User owner = User.builder().id(1L).build();
         ru.practicum.shareit.request.ItemRequest request = ru.practicum.shareit.request.ItemRequest.builder()
                 .id(10L)
@@ -61,17 +57,14 @@ class ItemMapperTest {
                 .request(request)
                 .build();
 
-        // When
         ItemDto dto = itemMapper.toDto(item);
 
-        // Then
         assertNotNull(dto);
         assertEquals(10L, dto.getRequestId());
     }
 
     @Test
     void toEntity_WithValidDtoAndOwner_ShouldReturnItem() {
-        // Given
         ItemDto dto = ItemDto.builder()
                 .id(1L)
                 .name("Item")
@@ -84,10 +77,8 @@ class ItemMapperTest {
                 .name("Owner")
                 .build();
 
-        // When
         Item item = itemMapper.toEntity(dto, owner);
 
-        // Then
         assertNotNull(item);
         assertEquals(1L, item.getId());
         assertEquals("Item", item.getName());

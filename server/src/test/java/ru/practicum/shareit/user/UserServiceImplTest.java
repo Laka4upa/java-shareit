@@ -30,7 +30,6 @@ class UserServiceImplTest {
 
     @Test
     void createUser_WithValidData_ShouldReturnUserDto() {
-        // Given
         UserDto userDto = UserDto.builder()
                 .name("John Doe")
                 .email("john@mail.com")
@@ -52,10 +51,8 @@ class UserServiceImplTest {
         when(userRepository.save(user)).thenReturn(user);
         when(userMapper.toDto(user)).thenReturn(expectedDto);
 
-        // When
         UserDto result = userService.createUser(userDto);
 
-        // Then
         assertNotNull(result);
         assertEquals(1L, result.getId());
         assertEquals("John Doe", result.getName());
@@ -64,7 +61,6 @@ class UserServiceImplTest {
 
     @Test
     void getUserById_WithExistingId_ShouldReturnUserDto() {
-        // Given
         Long userId = 1L;
         User user = User.builder()
                 .id(userId)
@@ -81,10 +77,8 @@ class UserServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(user));
         when(userMapper.toDto(user)).thenReturn(expectedDto);
 
-        // When
         UserDto result = userService.getUserById(userId);
 
-        // Then
         assertNotNull(result);
         assertEquals(userId, result.getId());
         verify(userRepository).findById(userId);
@@ -92,7 +86,6 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_WithUserUpdateDto_ShouldReturnUpdatedUser() {
-        // Given
         Long userId = 1L;
         User existingUser = User.builder()
                 .id(userId)
@@ -122,10 +115,8 @@ class UserServiceImplTest {
         when(userRepository.save(any(User.class))).thenReturn(updatedUser);
         when(userMapper.toDto(updatedUser)).thenReturn(expectedDto);
 
-        // When
         UserDto result = userService.updateUser(userId, updateDto);
 
-        // Then
         assertNotNull(result);
         assertEquals("Updated Name", result.getName());
         assertEquals("updated@mail.com", result.getEmail());
@@ -134,7 +125,6 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_WithUserUpdateDtoPartialData_ShouldUpdateOnlyProvidedFields() {
-        // Given
         Long userId = 1L;
         User existingUser = User.builder()
                 .id(userId)
@@ -150,7 +140,7 @@ class UserServiceImplTest {
         User updatedUser = User.builder()
                 .id(userId)
                 .name("Updated Name")
-                .email("original@mail.com") // Email остается прежним
+                .email("original@mail.com")
                 .build();
 
         UserDto expectedDto = UserDto.builder()
@@ -163,10 +153,8 @@ class UserServiceImplTest {
         when(userRepository.save(any(User.class))).thenReturn(updatedUser);
         when(userMapper.toDto(updatedUser)).thenReturn(expectedDto);
 
-        // When
         UserDto result = userService.updateUser(userId, updateDto);
 
-        // Then
         assertNotNull(result);
         assertEquals("Updated Name", result.getName());
         assertEquals("original@mail.com", result.getEmail()); // Email должен остаться прежним
@@ -174,7 +162,6 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_WithUserDto_ShouldReturnUpdatedUser() {
-        // Given
         Long userId = 1L;
         User existingUser = User.builder()
                 .id(userId)
@@ -204,10 +191,8 @@ class UserServiceImplTest {
         when(userRepository.save(any(User.class))).thenReturn(updatedUser);
         when(userMapper.toDto(updatedUser)).thenReturn(expectedDto);
 
-        // When
         UserDto result = userService.updateUser(userId, updateDto);
 
-        // Then
         assertNotNull(result);
         assertEquals("Updated Name", result.getName());
         assertEquals("updated@mail.com", result.getEmail());
@@ -215,7 +200,6 @@ class UserServiceImplTest {
 
     @Test
     void updateUser_WithDuplicateEmail_ShouldThrowConflictException() {
-        // Given
         Long userId = 1L;
         User existingUser = User.builder()
                 .id(userId)
@@ -230,19 +214,15 @@ class UserServiceImplTest {
         when(userRepository.findById(userId)).thenReturn(Optional.of(existingUser));
         when(userRepository.existsByEmailAndIdNot("duplicate@mail.com", userId)).thenReturn(true);
 
-        // When & Then
         assertThrows(ConflictException.class, () -> userService.updateUser(userId, updateDto));
     }
 
     @Test
     void deleteUser_WithExistingId_ShouldDeleteUser() {
-        // Given
         Long userId = 1L;
 
-        // When
         userService.deleteUser(userId);
 
-        // Then
         verify(userRepository).deleteById(userId);
     }
 }

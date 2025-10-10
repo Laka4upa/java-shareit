@@ -51,7 +51,6 @@ class BookingMapperTest {
 
     @Test
     void toDto_WithValidBooking_ShouldReturnResponseDto() {
-        // Given
         User booker = User.builder()
                 .id(1L)
                 .name("Booker")
