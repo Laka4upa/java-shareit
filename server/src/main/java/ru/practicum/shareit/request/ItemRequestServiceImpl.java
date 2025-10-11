@@ -57,12 +57,7 @@ public class ItemRequestServiceImpl implements ItemRequestService {
 
     @Override
     public List<ItemRequestResponseDto> getAllRequests(Long userId) {
-        userRepository.findById(userId)
-                .orElseThrow(() -> new NoSuchElementException("Пользователь не найден с id: " + userId));
-
-        return itemRequestRepository.findAllByRequesterIdNot(userId).stream()
-                .map(itemRequestMapper::toDto)
-                .collect(Collectors.toList());
+        return getAllRequests(userId, Pageable.unpaged());
     }
 
     @Override
